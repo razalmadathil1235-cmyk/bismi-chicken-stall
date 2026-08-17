@@ -306,7 +306,7 @@ function TrustStrip() {
     { icon: Leaf, label: "Fresh daily" },
     { icon: ShieldCheck, label: "Halal & hygienic" },
     { icon: Scissors, label: "Cut & cleaned" },
-    { icon: Truck, label: "Free delivery" },
+    { icon: Truck, label: `${DELIVERY_INFO} delivery` },
   ];
   return (
     <div className="border-y border-border/70 bg-card">
