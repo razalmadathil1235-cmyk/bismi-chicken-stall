@@ -472,10 +472,8 @@ function QtyStepper({
 function WhyUs() {
   const feats = [
     {
-      icon: Truck,
-      title: "Free home delivery",
-      text: "Free delivery across Kunnamangalam and nearby Kozhikode areas. Same-day for orders before evening.",
-    },
+      title: "Home delivery",
+      text: `Delivery across Kuttikatoor and nearby Kozhikode areas at ₹10 per 3 km. Same-day for orders before evening.`,
     {
       icon: Leaf,
       title: "Fresh, never frozen",
