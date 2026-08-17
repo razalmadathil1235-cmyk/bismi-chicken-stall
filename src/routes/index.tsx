@@ -231,12 +231,12 @@ function Hero() {
           </span>
           <h1 className="mt-5 font-display text-4xl font-600 leading-[1.05] tracking-tight text-balance text-foreground sm:text-5xl md:text-6xl">
             Fresh chicken,{" "}
-            <span className="text-gradient-warm">delivered free</span> to your
-            door.
+            <span className="text-gradient-warm">brought to your door</span> in
+            Kuttikatoor.
           </h1>
           <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
             Order broiler, spring and nadan kozhi from Bismi Chicken Stall in
-            Kunnamangalam. Cut, cleaned and on its way — pay on delivery.
+            Kuttikatoor. Cut, cleaned and on its way — pay on delivery.
           </p>
 
           <div className="mt-7 flex flex-wrap items-center gap-3">
