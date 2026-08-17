@@ -898,7 +898,7 @@ function CartDrawer({
             <div className="border-t border-border bg-card px-5 py-4">
               <div className="flex items-center justify-between text-sm text-muted-foreground">
                 <span>Delivery</span>
-                <span className="font-semibold text-leaf">Free</span>
+                <span className="font-semibold text-leaf">{DELIVERY_INFO}</span>
               </div>
               <div className="mt-1 flex items-start justify-between gap-3">
                 <span className="text-sm text-muted-foreground">Total</span>
