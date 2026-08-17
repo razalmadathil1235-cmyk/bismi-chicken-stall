@@ -260,10 +260,10 @@ function Hero() {
 
           <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
             <span className="inline-flex items-center gap-2">
-              <Truck className="size-4 text-accent" /> Free home delivery
+              <Truck className="size-4 text-accent" /> Delivery from {DELIVERY_INFO}
             </span>
             <span className="inline-flex items-center gap-2">
-              <Star className="size-4 text-primary" /> Same-day in Kunnamangalam
+              <Star className="size-4 text-primary" /> Same-day in Kuttikatoor
             </span>
             <span className="inline-flex items-center gap-2">
               <Phone className="size-4 text-accent" /> {PHONE}
