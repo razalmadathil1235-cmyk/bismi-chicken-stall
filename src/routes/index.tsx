@@ -351,7 +351,7 @@ function Products({
         <p className="mt-3 text-muted-foreground">
           Rates change with the market every day, so give us a call or a
           WhatsApp message for today&apos;s price. Choose your kilos — we cut and
-          clean it fresh, then deliver free.
+          clean it fresh, then deliver at ₹10 per 3 km.
         </p>
       </div>
 
