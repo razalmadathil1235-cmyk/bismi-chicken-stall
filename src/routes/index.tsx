@@ -291,7 +291,7 @@ function Hero() {
             </p>
           </div>
           <div className="absolute -right-3 top-5 inline-flex items-center gap-2 rounded-full bg-accent px-3.5 py-1.5 text-xs font-bold text-accent-foreground shadow-soft sm:-right-5">
-            <Truck className="size-3.5" /> FREE DELIVERY
+            <Truck className="size-3.5" /> {DELIVERY_INFO} DELIVERY
           </div>
         </div>
       </div>
