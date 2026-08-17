@@ -7,7 +7,7 @@ import {
   Clock,
   Leaf,
   ShieldCheck,
-  Knife,
+  Scissors,
   ShoppingCart,
   Plus,
   Minus,
