@@ -148,7 +148,6 @@ function Index() {
         onClose={() => setOpen(false)}
         cart={cart}
         setQty={setQty}
-        total={total}
         count={count}
       />
     </div>
@@ -710,14 +709,12 @@ function CartDrawer({
   onClose,
   cart,
   setQty,
-  total,
   count,
 }: {
   open: boolean;
   onClose: () => void;
   cart: CartItem[];
   setQty: (id: string, qty: number) => void;
-  total: number;
   count: number;
 }) {
   const [name, setName] = useState("");
@@ -746,7 +743,7 @@ function CartDrawer({
       "Delivery: Free (pay on delivery)",
     ].filter(Boolean);
     return parts.join("\n");
-  }, [name, phone, address, notes, lines, total]);
+  }, [name, phone, address, notes, lines]);
 
   const waHref = `https://wa.me/${PHONE_INTL}?text=${encodeURIComponent(message)}`;
 
