@@ -33,7 +33,8 @@ export const Route = createFileRoute("/")({
 const PHONE = "8157988462";
 const PHONE_INTL = "918157988462";
 const ADDRESS =
-  "MLA Road, Kozhikode, Kerala 673571 (Landmark: Kunnamangalam Co-operative Bank)";
+  "MLA Road, Kuttikatoor, Kozhikode, Kerala 673571 (Landmark: Kunnamangalam Co-operative Bank)";
+const DELIVERY_INFO = "₹10 per 3 km";
 
 type Product = {
   id: string;
