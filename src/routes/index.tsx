@@ -40,7 +40,6 @@ type Product = {
   name: string;
   malayalam: string;
   blurb: string;
-  price: number; // per kg
   image: string;
   tag?: string;
   badge?: string;
@@ -53,7 +52,6 @@ const PRODUCTS: Product[] = [
     malayalam: "ബ്രോയിലർ കോഴി",
     blurb:
       "Tender farm-fresh broiler, cleaned and cut to your liking. Perfect for everyday curries and fries.",
-    price: 150,
     image: broilerImg,
     tag: "Best value",
   },
@@ -63,7 +61,6 @@ const PRODUCTS: Product[] = [
     malayalam: "ലെഗ് പീസ്",
     blurb:
       "Juicy thigh and drumstick cuts only — the favourite for biryani, fry and kids at home.",
-    price: 190,
     image: legImg,
     tag: "Most loved",
   },
@@ -73,7 +70,6 @@ const PRODUCTS: Product[] = [
     malayalam: "സ്പ്രിങ് കോഴി",
     blurb:
       "Young, tender spring chicken with delicate flavour. Ideal for roast and rich masala.",
-    price: 240,
     image: springImg,
     tag: "Tender",
   },
@@ -83,7 +79,6 @@ const PRODUCTS: Product[] = [
     malayalam: "നാടൻ കോഴി",
     blurb:
       "Free-range country chicken with deep, authentic taste and firm texture. The flavour of home.",
-    price: 480,
     image: nadanImg,
     tag: "Premium",
     badge: "Free-range",
@@ -92,9 +87,7 @@ const PRODUCTS: Product[] = [
 
 type CartItem = { id: string; qty: number };
 
-function inr(n: number) {
-  return "₹" + n.toLocaleString("en-IN");
-}
+const RATE_NOTE = "Today's rate on call";
 
 function Index() {
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -122,14 +115,6 @@ function Index() {
   }, [cart, hydrated]);
 
   const count = cart.reduce((s, i) => s + i.qty, 0);
-  const total = useMemo(
-    () =>
-      cart.reduce((s, i) => {
-        const p = PRODUCTS.find((x) => x.id === i.id)!;
-        return s + p.price * i.qty;
-      }, 0),
-    [cart],
-  );
 
   const setQty = (id: string, qty: number) =>
     setCart((c) =>
@@ -299,11 +284,10 @@ function Hero() {
           </div>
           <div className="absolute -bottom-5 -left-3 rounded-2xl border border-border bg-card/95 px-4 py-3 shadow-soft backdrop-blur sm:-left-6">
             <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Starting from
+              Today&apos;s rate
             </p>
-            <p className="font-display text-2xl font-600 text-foreground">
-              {inr(150)}
-              <span className="text-sm font-500 text-muted-foreground"> /kg</span>
+            <p className="font-display text-xl font-600 text-foreground">
+              Call us to know
             </p>
           </div>
           <div className="absolute -right-3 top-5 inline-flex items-center gap-2 rounded-full bg-accent px-3.5 py-1.5 text-xs font-bold text-accent-foreground shadow-soft sm:-right-5">
@@ -365,8 +349,9 @@ function Products({
           Pick your chicken, set the kilos
         </h2>
         <p className="mt-3 text-muted-foreground">
-          Prices are per kilogram. Choose how much you want — we cut and clean it
-          fresh, then deliver free.
+          Rates change with the market every day, so give us a call or a
+          WhatsApp message for today&apos;s price. Choose your kilos — we cut and
+          clean it fresh, then deliver free.
         </p>
       </div>
 
@@ -410,14 +395,16 @@ function Products({
                   {p.blurb}
                 </p>
 
-                <div className="mt-4 flex items-end justify-between">
-                  <p className="font-display text-xl font-600 text-foreground">
-                    {inr(p.price)}
-                    <span className="text-xs font-500 text-muted-foreground">
-                      {" "}
-                      /kg
-                    </span>
+                <div className="mt-4 flex items-center justify-between gap-2">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-accent">
+                    {RATE_NOTE}
                   </p>
+                  <a
+                    href={`tel:${PHONE}`}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-xs font-semibold text-foreground transition-colors hover:bg-secondary"
+                  >
+                    <Phone className="size-3" /> Ask rate
+                  </a>
                 </div>
 
                 {hydrated && inCart ? (
@@ -428,7 +415,7 @@ function Products({
                       onInc={() => setQty(p.id, inCart.qty + 1)}
                     />
                     <span className="text-sm font-semibold text-accent">
-                      {inr(p.price * inCart.qty)}
+                      {inCart.qty} kg
                     </span>
                   </div>
                 ) : (
@@ -740,7 +727,7 @@ function CartDrawer({
 
   const lines = cart.map((i) => {
     const p = PRODUCTS.find((x) => x.id === i.id)!;
-    return `${p.name} — ${i.qty} kg — ${inr(p.price * i.qty)}`;
+    return `${p.name} — ${i.qty} kg`;
   });
 
   const message = useMemo(() => {
@@ -755,7 +742,7 @@ function CartDrawer({
       "Items:",
       ...lines,
       "",
-      `Total: ${inr(total)}`,
+      "Please confirm today's rate and total.",
       "Delivery: Free (pay on delivery)",
     ].filter(Boolean);
     return parts.join("\n");
@@ -836,7 +823,7 @@ function CartDrawer({
                         {p.name}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {inr(p.price)}/kg
+                        {RATE_NOTE}
                       </p>
                       <div className="mt-1.5 inline-flex items-center rounded-full border border-border bg-background p-0.5">
                         <button
@@ -859,9 +846,6 @@ function CartDrawer({
                       </div>
                     </div>
                     <div className="flex flex-col items-end gap-2">
-                      <span className="text-sm font-bold text-foreground">
-                        {inr(p.price * i.qty)}
-                      </span>
                       <button
                         onClick={() => setQty(p.id, 0)}
                         aria-label="Remove"
@@ -917,10 +901,10 @@ function CartDrawer({
                 <span>Delivery</span>
                 <span className="font-semibold text-leaf">Free</span>
               </div>
-              <div className="mt-1 flex items-end justify-between">
+              <div className="mt-1 flex items-start justify-between gap-3">
                 <span className="text-sm text-muted-foreground">Total</span>
-                <span className="font-display text-2xl font-600 text-foreground">
-                  {inr(total)}
+                <span className="max-w-[60%] text-right text-xs font-semibold text-foreground">
+                  We confirm today&apos;s rate on WhatsApp or call
                 </span>
               </div>
               <a
