@@ -544,8 +544,9 @@ function Location() {
             On MLA Road, Kuttikatoor
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Look for the Kuttikatoor — look for the Kunnamangalam Co-operative Bank. We're right there. Or
-            skip the trip: order online and we'll bring it to you, free.
+            We're in Kuttikatoor on MLA Road — look for the Kunnamangalam
+            Co-operative Bank, we're right there. Or skip the trip: order online
+            and we'll bring it to you.
           </p>
 
           <ul className="mt-7 space-y-4">
