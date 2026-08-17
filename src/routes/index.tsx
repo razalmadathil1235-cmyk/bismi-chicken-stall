@@ -564,7 +564,7 @@ function Location() {
               7:00 AM – 9:00 PM
             </InfoRow>
             <InfoRow icon={Truck} title="Delivery">
-              Delivery across Kuttikatoor Free home delivery in Kunnamangalam & nearby areas nearby areas (₹10 per 3 km)
+              Delivery across Kuttikatoor & nearby areas (₹10 per 3 km)
             </InfoRow>
           </ul>
 
