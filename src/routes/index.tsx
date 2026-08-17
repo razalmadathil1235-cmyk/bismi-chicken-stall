@@ -33,7 +33,8 @@ export const Route = createFileRoute("/")({
 const PHONE = "8157988462";
 const PHONE_INTL = "918157988462";
 const ADDRESS =
-  "MLA Road, Kozhikode, Kerala 673571 (Landmark: Kunnamangalam Co-operative Bank)";
+  "MLA Road, Kuttikatoor, Kozhikode, Kerala 673571 (Landmark: Kunnamangalam Co-operative Bank)";
+const DELIVERY_INFO = "₹10 per 3 km";
 
 type Product = {
   id: string;
@@ -230,12 +231,12 @@ function Hero() {
           </span>
           <h1 className="mt-5 font-display text-4xl font-600 leading-[1.05] tracking-tight text-balance text-foreground sm:text-5xl md:text-6xl">
             Fresh chicken,{" "}
-            <span className="text-gradient-warm">delivered free</span> to your
-            door.
+            <span className="text-gradient-warm">brought to your door</span> in
+            Kuttikatoor.
           </h1>
           <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
             Order broiler, spring and nadan kozhi from Bismi Chicken Stall in
-            Kunnamangalam. Cut, cleaned and on its way — pay on delivery.
+            Kuttikatoor. Cut, cleaned and on its way — pay on delivery.
           </p>
 
           <div className="mt-7 flex flex-wrap items-center gap-3">
@@ -259,10 +260,10 @@ function Hero() {
 
           <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
             <span className="inline-flex items-center gap-2">
-              <Truck className="size-4 text-accent" /> Free home delivery
+              <Truck className="size-4 text-accent" /> Delivery from {DELIVERY_INFO}
             </span>
             <span className="inline-flex items-center gap-2">
-              <Star className="size-4 text-primary" /> Same-day in Kunnamangalam
+              <Star className="size-4 text-primary" /> Same-day in Kuttikatoor
             </span>
             <span className="inline-flex items-center gap-2">
               <Phone className="size-4 text-accent" /> {PHONE}
@@ -290,7 +291,7 @@ function Hero() {
             </p>
           </div>
           <div className="absolute -right-3 top-5 inline-flex items-center gap-2 rounded-full bg-accent px-3.5 py-1.5 text-xs font-bold text-accent-foreground shadow-soft sm:-right-5">
-            <Truck className="size-3.5" /> FREE DELIVERY
+            <Truck className="size-3.5" /> {DELIVERY_INFO} DELIVERY
           </div>
         </div>
       </div>
@@ -305,7 +306,7 @@ function TrustStrip() {
     { icon: Leaf, label: "Fresh daily" },
     { icon: ShieldCheck, label: "Halal & hygienic" },
     { icon: Scissors, label: "Cut & cleaned" },
-    { icon: Truck, label: "Free delivery" },
+    { icon: Truck, label: `${DELIVERY_INFO} delivery` },
   ];
   return (
     <div className="border-y border-border/70 bg-card">
@@ -350,7 +351,7 @@ function Products({
         <p className="mt-3 text-muted-foreground">
           Rates change with the market every day, so give us a call or a
           WhatsApp message for today&apos;s price. Choose your kilos — we cut and
-          clean it fresh, then deliver free.
+          clean it fresh, then deliver at ₹10 per 3 km.
         </p>
       </div>
 
@@ -472,8 +473,8 @@ function WhyUs() {
   const feats = [
     {
       icon: Truck,
-      title: "Free home delivery",
-      text: "Free delivery across Kunnamangalam and nearby Kozhikode areas. Same-day for orders before evening.",
+      title: "Home delivery",
+      text: `Delivery across Kuttikatoor and nearby Kozhikode areas at ₹10 per 3 km. Same-day for orders before evening.`,
     },
     {
       icon: Leaf,
@@ -530,7 +531,7 @@ function WhyUs() {
 function Location() {
   const mapSrc =
     "https://www.google.com/maps?q=" +
-    encodeURIComponent("Kunnamangalam Co-operative Bank, MLA Road, Kozhikode, Kerala 673571") +
+    encodeURIComponent("Kunnamangalam Co-operative Bank, MLA Road, Kuttikatoor, Kozhikode, Kerala 673571") +
     "&output=embed";
   return (
     <section id="location" className="mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-24">
@@ -540,16 +541,17 @@ function Location() {
             Find us
           </p>
           <h2 className="mt-2 font-display text-3xl font-600 tracking-tight text-foreground sm:text-4xl">
-            On MLA Road, Kunnamangalam
+            On MLA Road, Kuttikatoor
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Look for the Kunnamangalam Co-operative Bank — we're right there. Or
-            skip the trip: order online and we'll bring it to you, free.
+            We're in Kuttikatoor on MLA Road — look for the Kunnamangalam
+            Co-operative Bank, we're right there. Or skip the trip: order online
+            and we'll bring it to you.
           </p>
 
           <ul className="mt-7 space-y-4">
             <InfoRow icon={MapPin} title="Address">
-              MLA Road, Kozhikode, Kerala 673571
+              MLA Road, Kuttikatoor, Kozhikode, Kerala 673571
               <br />
               Landmark: Kunnamangalam Co-operative Bank
             </InfoRow>
@@ -562,7 +564,7 @@ function Location() {
               7:00 AM – 9:00 PM
             </InfoRow>
             <InfoRow icon={Truck} title="Delivery">
-              Free home delivery in Kunnamangalam & nearby areas
+              Delivery across Kuttikatoor & nearby areas (₹10 per 3 km)
             </InfoRow>
           </ul>
 
@@ -642,7 +644,7 @@ function Footer({ onCart }: { onCart: () => void }) {
               </div>
             </div>
             <p className="mt-3 max-w-xs text-sm text-muted-foreground">
-              Fresh chicken, cut to order and delivered free in Kunnamangalam,
+              Fresh chicken, cut to order and delivered in Kuttikatoor,
               Kozhikode.
             </p>
           </div>
@@ -694,8 +696,8 @@ function Footer({ onCart }: { onCart: () => void }) {
         </div>
 
         <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row">
-          <p>© {new Date().getFullYear()} Bismi Chicken Stall, Kunnamangalam.</p>
-          <p>Free home delivery · Pay on delivery</p>
+          <p>© {new Date().getFullYear()} Bismi Chicken Stall, Kuttikatoor.</p>
+          <p>Delivery ₹10 per 3 km · Pay on delivery</p>
         </div>
       </div>
     </footer>
@@ -740,7 +742,7 @@ function CartDrawer({
       ...lines,
       "",
       "Please confirm today's rate and total.",
-      "Delivery: Free (pay on delivery)",
+      "Delivery: ₹10 per 3 km (pay on delivery)",
     ].filter(Boolean);
     return parts.join("\n");
   }, [name, phone, address, notes, lines]);
@@ -896,7 +898,7 @@ function CartDrawer({
             <div className="border-t border-border bg-card px-5 py-4">
               <div className="flex items-center justify-between text-sm text-muted-foreground">
                 <span>Delivery</span>
-                <span className="font-semibold text-leaf">Free</span>
+                <span className="font-semibold text-leaf">{DELIVERY_INFO}</span>
               </div>
               <div className="mt-1 flex items-start justify-between gap-3">
                 <span className="text-sm text-muted-foreground">Total</span>
