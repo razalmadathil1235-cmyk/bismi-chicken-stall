@@ -531,7 +531,7 @@ function WhyUs() {
 function Location() {
   const mapSrc =
     "https://www.google.com/maps?q=" +
-    encodeURIComponent("Kunnamangalam Co-operative Bank, MLA Road, Kozhikode, Kerala 673571") +
+    encodeURIComponent("Kunnamangalam Co-operative Bank, MLA Road, Kuttikatoor, Kozhikode, Kerala 673571") +
     "&output=embed";
   return (
     <section id="location" className="mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-24">
@@ -541,16 +541,16 @@ function Location() {
             Find us
           </p>
           <h2 className="mt-2 font-display text-3xl font-600 tracking-tight text-foreground sm:text-4xl">
-            On MLA Road, Kunnamangalam
+            On MLA Road, Kuttikatoor
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Look for the Kunnamangalam Co-operative Bank — we're right there. Or
+            Look for the Kuttikatoor — look for the Kunnamangalam Co-operative Bank. We're right there. Or
             skip the trip: order online and we'll bring it to you, free.
           </p>
 
           <ul className="mt-7 space-y-4">
             <InfoRow icon={MapPin} title="Address">
-              MLA Road, Kozhikode, Kerala 673571
+              MLA Road, Kuttikatoor, Kozhikode, Kerala 673571
               <br />
               Landmark: Kunnamangalam Co-operative Bank
             </InfoRow>
@@ -563,7 +563,7 @@ function Location() {
               7:00 AM – 9:00 PM
             </InfoRow>
             <InfoRow icon={Truck} title="Delivery">
-              Free home delivery in Kunnamangalam & nearby areas
+              Delivery across Kuttikatoor Free home delivery in Kunnamangalam & nearby areas nearby areas (₹10 per 3 km)
             </InfoRow>
           </ul>
 
@@ -643,7 +643,7 @@ function Footer({ onCart }: { onCart: () => void }) {
               </div>
             </div>
             <p className="mt-3 max-w-xs text-sm text-muted-foreground">
-              Fresh chicken, cut to order and delivered free in Kunnamangalam,
+              Fresh chicken, cut to order and delivered in Kuttikatoor,
               Kozhikode.
             </p>
           </div>
@@ -695,8 +695,8 @@ function Footer({ onCart }: { onCart: () => void }) {
         </div>
 
         <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row">
-          <p>© {new Date().getFullYear()} Bismi Chicken Stall, Kunnamangalam.</p>
-          <p>Free home delivery · Pay on delivery</p>
+          <p>© {new Date().getFullYear()} Bismi Chicken Stall, Kuttikatoor.</p>
+          <p>Delivery ₹10 per 3 km · Pay on delivery</p>
         </div>
       </div>
     </footer>
@@ -741,7 +741,7 @@ function CartDrawer({
       ...lines,
       "",
       "Please confirm today's rate and total.",
-      "Delivery: Free (pay on delivery)",
+      "Delivery: ₹10 per 3 km (pay on delivery)",
     ].filter(Boolean);
     return parts.join("\n");
   }, [name, phone, address, notes, lines]);
