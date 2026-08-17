@@ -476,6 +476,7 @@ function WhyUs() {
       title: "Home delivery",
       text: `Delivery across Kuttikatoor and nearby Kozhikode areas at ₹10 per 3 km. Same-day for orders before evening.`,
     },
+    {
       icon: Leaf,
       title: "Fresh, never frozen",
       text: "Chicken cut fresh only after you order — never stocked frozen. Cleaned and packed hygienically.",
