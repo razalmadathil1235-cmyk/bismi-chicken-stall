@@ -321,7 +321,7 @@ function TrustStrip() {
   const items = [
     { icon: Leaf, label: "Fresh daily" },
     { icon: ShieldCheck, label: "Halal & hygienic" },
-    { icon: Knife, label: "Cut & cleaned" },
+    { icon: Scissors, label: "Cut & cleaned" },
     { icon: Truck, label: "Free delivery" },
   ];
   return (
