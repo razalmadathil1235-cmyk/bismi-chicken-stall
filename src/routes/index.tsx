@@ -1051,6 +1051,28 @@ function CartDrawer({
                   )}
                 </div>
 
+                <Field label="How should we cut it?">
+                  <div className="flex flex-wrap gap-2">
+                    {CUT_STYLES.map((c) => {
+                      const active = cut === c;
+                      return (
+                        <button
+                          key={c}
+                          type="button"
+                          onClick={() => setCut(active ? "" : c)}
+                          className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
+                            active
+                              ? "border-accent bg-accent text-accent-foreground"
+                              : "border-input bg-background text-muted-foreground hover:border-accent hover:text-foreground"
+                          }`}
+                        >
+                          {c}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </Field>
+
                 <Field label="Notes (optional)">
                   <input
                     value={notes}
