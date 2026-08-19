@@ -148,6 +148,7 @@ function Index() {
       <Products onAdd={add} cart={cart} setQty={setQty} hydrated={hydrated} />
       <WhyUs />
       <Location />
+      <Support />
       <Footer onCart={() => setOpen(true)} />
 
       <CartDrawer
