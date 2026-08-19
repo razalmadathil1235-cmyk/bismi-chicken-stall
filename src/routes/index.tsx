@@ -20,6 +20,7 @@ import {
   Heart,
 } from "lucide-react";
 
+import logoAsset from "@/assets/bismi-logo.jpg.asset.json";
 import heroImg from "@/assets/hero.jpg";
 import broilerImg from "@/assets/chicken-broiler.jpg";
 import legImg from "@/assets/chicken-leg.jpg";
@@ -212,9 +213,11 @@ function Header({ count, onCart }: { count: number; onCart: () => void }) {
 
 function Logo() {
   return (
-    <span className="grid size-10 place-items-center rounded-xl gradient-warm text-white shadow-soft">
-      <Flame className="size-5" strokeWidth={2.4} />
-    </span>
+    <img
+      src={logoAsset.url}
+      alt="Bismi Chicken Stall Kuttikatoor logo"
+      className="size-11 rounded-xl object-contain"
+    />
   );
 }
 
