@@ -793,6 +793,7 @@ function CartDrawer({
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
+  const [cut, setCut] = useState<string>("");
   const [coords, setCoords] = useState<{ lat: number; lng: number; acc: number } | null>(null);
   const [locStatus, setLocStatus] = useState<"idle" | "loading" | "error">("idle");
   const [locError, setLocError] = useState("");
