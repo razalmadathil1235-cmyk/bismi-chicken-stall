@@ -994,6 +994,61 @@ function CartDrawer({
                     className="w-full resize-none rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
                   />
                 </Field>
+
+                <div className="rounded-xl border border-border bg-card p-3">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Live location
+                  </p>
+                  {coords ? (
+                    <div className="mt-2">
+                      <p className="text-sm font-semibold text-leaf">
+                        Location attached ✓
+                      </p>
+                      <a
+                        href={mapsLink ?? "#"}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="mt-0.5 block break-all text-xs text-muted-foreground underline hover:text-accent"
+                      >
+                        {coords.lat.toFixed(5)}, {coords.lng.toFixed(5)} (±
+                        {coords.acc} m)
+                      </a>
+                      <button
+                        onClick={shareLocation}
+                        className="mt-2 text-xs font-semibold text-accent hover:underline"
+                      >
+                        Update location
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        Share your GPS pin so the delivery rider finds you
+                        exactly. It&apos;s sent with your order on WhatsApp.
+                      </p>
+                      <button
+                        onClick={shareLocation}
+                        disabled={locStatus === "loading"}
+                        className="mt-2.5 inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-xs font-bold text-accent-foreground disabled:opacity-60"
+                      >
+                        {locStatus === "loading" ? (
+                          <Loader2 className="size-4 animate-spin" />
+                        ) : (
+                          <Navigation className="size-4" />
+                        )}
+                        {locStatus === "loading"
+                          ? "Getting location…"
+                          : "Share my location"}
+                      </button>
+                    </>
+                  )}
+                  {locStatus === "error" && (
+                    <p className="mt-2 text-xs font-medium text-destructive">
+                      {locError}
+                    </p>
+                  )}
+                </div>
+
                 <Field label="Notes (optional)">
                   <input
                     value={notes}
