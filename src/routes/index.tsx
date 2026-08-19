@@ -793,6 +793,7 @@ function CartDrawer({
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
+  const [cut, setCut] = useState<string>("");
   const [coords, setCoords] = useState<{ lat: number; lng: number; acc: number } | null>(null);
   const [locStatus, setLocStatus] = useState<"idle" | "loading" | "error">("idle");
   const [locError, setLocError] = useState("");
@@ -842,6 +843,7 @@ function CartDrawer({
       `Name: ${name || "—"}`,
       `Phone: ${phone || "—"}`,
       `Address: ${address || "—"}`,
+      `Cut style: ${cut || "—"}`,
       notes ? `Notes: ${notes}` : null,
       "",
       "Items:",
@@ -855,7 +857,7 @@ function CartDrawer({
       "Delivery: ₹10 per 3 km (pay on delivery)",
     ].filter((x) => x !== null);
     return parts.join("\n");
-  }, [name, phone, address, notes, lines, mapsLink, coords]);
+  }, [name, phone, address, cut, notes, lines, mapsLink, coords]);
 
   const waHref = `https://wa.me/${PHONE_INTL}?text=${encodeURIComponent(message)}`;
 
@@ -1048,6 +1050,28 @@ function CartDrawer({
                     </p>
                   )}
                 </div>
+
+                <Field label="How should we cut it?">
+                  <div className="flex flex-wrap gap-2">
+                    {CUT_STYLES.map((c) => {
+                      const active = cut === c;
+                      return (
+                        <button
+                          key={c}
+                          type="button"
+                          onClick={() => setCut(active ? "" : c)}
+                          className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
+                            active
+                              ? "border-accent bg-accent text-accent-foreground"
+                              : "border-input bg-background text-muted-foreground hover:border-accent hover:text-foreground"
+                          }`}
+                        >
+                          {c}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </Field>
 
                 <Field label="Notes (optional)">
                   <input
