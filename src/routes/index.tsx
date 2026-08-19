@@ -793,6 +793,42 @@ function CartDrawer({
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
+  const [coords, setCoords] = useState<{ lat: number; lng: number; acc: number } | null>(null);
+  const [locStatus, setLocStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [locError, setLocError] = useState("");
+
+  const shareLocation = () => {
+    if (typeof navigator === "undefined" || !navigator.geolocation) {
+      setLocStatus("error");
+      setLocError("Location isn't supported on this browser.");
+      return;
+    }
+    setLocStatus("loading");
+    setLocError("");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setCoords({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+          acc: Math.round(pos.coords.accuracy),
+        });
+        setLocStatus("idle");
+      },
+      (err) => {
+        setLocStatus("error");
+        setLocError(
+          err.code === err.PERMISSION_DENIED
+            ? "Location permission denied. Allow it, or type your address above."
+            : "Couldn't get your location. Please try again.",
+        );
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
+    );
+  };
+
+  const mapsLink = coords
+    ? `https://maps.google.com/?q=${coords.lat.toFixed(6)},${coords.lng.toFixed(6)}`
+    : null;
 
   const lines = cart.map((i) => {
     const p = PRODUCTS.find((x) => x.id === i.id)!;
@@ -811,11 +847,15 @@ function CartDrawer({
       "Items:",
       ...lines,
       "",
+      mapsLink ? "📍 Live location for delivery:" : null,
+      mapsLink ? mapsLink : null,
+      coords ? `(accuracy ±${coords.acc} m)` : null,
+      mapsLink ? "" : null,
       "Please confirm today's rate and total.",
       "Delivery: ₹10 per 3 km (pay on delivery)",
-    ].filter(Boolean);
+    ].filter((x) => x !== null);
     return parts.join("\n");
-  }, [name, phone, address, notes, lines]);
+  }, [name, phone, address, notes, lines, mapsLink, coords]);
 
   const waHref = `https://wa.me/${PHONE_INTL}?text=${encodeURIComponent(message)}`;
 
