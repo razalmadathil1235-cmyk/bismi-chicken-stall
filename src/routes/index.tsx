@@ -843,6 +843,7 @@ function CartDrawer({
       `Name: ${name || "—"}`,
       `Phone: ${phone || "—"}`,
       `Address: ${address || "—"}`,
+      `Cut style: ${cut || "—"}`,
       notes ? `Notes: ${notes}` : null,
       "",
       "Items:",
