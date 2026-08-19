@@ -16,7 +16,11 @@ import {
   MessageCircle,
   Star,
   ChevronRight,
-  Flame,
+  Mail,
+  Navigation,
+  LifeBuoy,
+  Loader2,
+
   Heart,
 } from "lucide-react";
 
@@ -36,6 +40,7 @@ const PHONE_INTL = "918157988462";
 const ADDRESS =
   "MLA Road, Kuttikatoor, Kozhikode, Kerala 673571 (Landmark: Kunnamangalam Co-operative Bank)";
 const DELIVERY_INFO = "₹10 per 3 km";
+const SUPPORT_EMAILS = ["shameer.ep53@gmail.com", "razalmadathil1235@gmail.com"];
 
 type Product = {
   id: string;
