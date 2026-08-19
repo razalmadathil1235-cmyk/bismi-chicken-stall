@@ -633,6 +633,67 @@ function InfoRow({
   );
 }
 
+/* ---------- Support ---------- */
+
+function Support() {
+  return (
+    <section id="support" className="border-y border-border bg-secondary/30">
+      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-20">
+        <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent">
+              Support
+            </p>
+            <h2 className="mt-2 font-display text-3xl font-600 tracking-tight text-foreground sm:text-4xl">
+              Need help with an order?
+            </h2>
+            <p className="mt-3 max-w-md text-muted-foreground">
+              Something wrong with a delivery, a question about today&apos;s rate,
+              or feedback for us? Call the shop, or write to our support team —
+              we reply as soon as we can.
+            </p>
+            <a
+              href={`tel:${PHONE}`}
+              className="mt-6 inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground shadow-soft transition-transform hover:scale-[1.03]"
+            >
+              <Phone className="size-4" /> {PHONE}
+            </a>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            {SUPPORT_EMAILS.map((email) => (
+              <a
+                key={email}
+                href={`mailto:${email}?subject=${encodeURIComponent("Bismi Chicken Stall — support")}`}
+                className="group rounded-2xl border border-border bg-card p-5 shadow-soft transition-transform hover:-translate-y-0.5"
+              >
+                <span className="grid size-11 place-items-center rounded-xl bg-accent/10 text-accent">
+                  <Mail className="size-5" />
+                </span>
+                <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Email support
+                </p>
+                <p className="mt-1 break-all text-sm font-semibold text-foreground group-hover:text-accent">
+                  {email}
+                </p>
+              </a>
+            ))}
+            <div className="rounded-2xl border border-dashed border-border p-5 sm:col-span-2">
+              <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                <LifeBuoy className="size-4 text-accent" /> Support hours
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                7:00 AM – 9:00 PM daily. For urgent delivery issues, WhatsApp is
+                fastest.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ---------- Footer ---------- */
 
 function Footer({ onCart }: { onCart: () => void }) {
