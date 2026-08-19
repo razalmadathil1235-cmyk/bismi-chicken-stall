@@ -857,7 +857,7 @@ function CartDrawer({
       "Delivery: ₹10 per 3 km (pay on delivery)",
     ].filter((x) => x !== null);
     return parts.join("\n");
-  }, [name, phone, address, notes, lines, mapsLink, coords]);
+  }, [name, phone, address, cut, notes, lines, mapsLink, coords]);
 
   const waHref = `https://wa.me/${PHONE_INTL}?text=${encodeURIComponent(message)}`;
 
