@@ -16,10 +16,15 @@ import {
   MessageCircle,
   Star,
   ChevronRight,
-  Flame,
+  Mail,
+  Navigation,
+  LifeBuoy,
+  Loader2,
+
   Heart,
 } from "lucide-react";
 
+import logoAsset from "@/assets/bismi-logo.jpg.asset.json";
 import heroImg from "@/assets/hero.jpg";
 import broilerImg from "@/assets/chicken-broiler.jpg";
 import legImg from "@/assets/chicken-leg.jpg";
@@ -35,6 +40,7 @@ const PHONE_INTL = "918157988462";
 const ADDRESS =
   "MLA Road, Kuttikatoor, Kozhikode, Kerala 673571 (Landmark: Kunnamangalam Co-operative Bank)";
 const DELIVERY_INFO = "₹10 per 3 km";
+const SUPPORT_EMAILS = ["shameer.ep53@gmail.com", "razalmadathil1235@gmail.com"];
 
 type Product = {
   id: string;
@@ -142,6 +148,7 @@ function Index() {
       <Products onAdd={add} cart={cart} setQty={setQty} hydrated={hydrated} />
       <WhyUs />
       <Location />
+      <Support />
       <Footer onCart={() => setOpen(true)} />
 
       <CartDrawer
@@ -212,9 +219,11 @@ function Header({ count, onCart }: { count: number; onCart: () => void }) {
 
 function Logo() {
   return (
-    <span className="grid size-10 place-items-center rounded-xl gradient-warm text-white shadow-soft">
-      <Flame className="size-5" strokeWidth={2.4} />
-    </span>
+    <img
+      src={logoAsset.url}
+      alt="Bismi Chicken Stall Kuttikatoor logo"
+      className="size-11 rounded-xl object-contain"
+    />
   );
 }
 
@@ -624,6 +633,67 @@ function InfoRow({
   );
 }
 
+/* ---------- Support ---------- */
+
+function Support() {
+  return (
+    <section id="support" className="border-y border-border bg-secondary/30">
+      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-20">
+        <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent">
+              Support
+            </p>
+            <h2 className="mt-2 font-display text-3xl font-600 tracking-tight text-foreground sm:text-4xl">
+              Need help with an order?
+            </h2>
+            <p className="mt-3 max-w-md text-muted-foreground">
+              Something wrong with a delivery, a question about today&apos;s rate,
+              or feedback for us? Call the shop, or write to our support team —
+              we reply as soon as we can.
+            </p>
+            <a
+              href={`tel:${PHONE}`}
+              className="mt-6 inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground shadow-soft transition-transform hover:scale-[1.03]"
+            >
+              <Phone className="size-4" /> {PHONE}
+            </a>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            {SUPPORT_EMAILS.map((email) => (
+              <a
+                key={email}
+                href={`mailto:${email}?subject=${encodeURIComponent("Bismi Chicken Stall — support")}`}
+                className="group rounded-2xl border border-border bg-card p-5 shadow-soft transition-transform hover:-translate-y-0.5"
+              >
+                <span className="grid size-11 place-items-center rounded-xl bg-accent/10 text-accent">
+                  <Mail className="size-5" />
+                </span>
+                <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Email support
+                </p>
+                <p className="mt-1 break-all text-sm font-semibold text-foreground group-hover:text-accent">
+                  {email}
+                </p>
+              </a>
+            ))}
+            <div className="rounded-2xl border border-dashed border-border p-5 sm:col-span-2">
+              <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                <LifeBuoy className="size-4 text-accent" /> Support hours
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                7:00 AM – 9:00 PM daily. For urgent delivery issues, WhatsApp is
+                fastest.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ---------- Footer ---------- */
 
 function Footer({ onCart }: { onCart: () => void }) {
@@ -723,6 +793,42 @@ function CartDrawer({
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
+  const [coords, setCoords] = useState<{ lat: number; lng: number; acc: number } | null>(null);
+  const [locStatus, setLocStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [locError, setLocError] = useState("");
+
+  const shareLocation = () => {
+    if (typeof navigator === "undefined" || !navigator.geolocation) {
+      setLocStatus("error");
+      setLocError("Location isn't supported on this browser.");
+      return;
+    }
+    setLocStatus("loading");
+    setLocError("");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setCoords({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+          acc: Math.round(pos.coords.accuracy),
+        });
+        setLocStatus("idle");
+      },
+      (err) => {
+        setLocStatus("error");
+        setLocError(
+          err.code === err.PERMISSION_DENIED
+            ? "Location permission denied. Allow it, or type your address above."
+            : "Couldn't get your location. Please try again.",
+        );
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
+    );
+  };
+
+  const mapsLink = coords
+    ? `https://maps.google.com/?q=${coords.lat.toFixed(6)},${coords.lng.toFixed(6)}`
+    : null;
 
   const lines = cart.map((i) => {
     const p = PRODUCTS.find((x) => x.id === i.id)!;
@@ -741,11 +847,15 @@ function CartDrawer({
       "Items:",
       ...lines,
       "",
+      mapsLink ? "📍 Live location for delivery:" : null,
+      mapsLink ? mapsLink : null,
+      coords ? `(accuracy ±${coords.acc} m)` : null,
+      mapsLink ? "" : null,
       "Please confirm today's rate and total.",
       "Delivery: ₹10 per 3 km (pay on delivery)",
-    ].filter(Boolean);
+    ].filter((x) => x !== null);
     return parts.join("\n");
-  }, [name, phone, address, notes, lines]);
+  }, [name, phone, address, notes, lines, mapsLink, coords]);
 
   const waHref = `https://wa.me/${PHONE_INTL}?text=${encodeURIComponent(message)}`;
 
@@ -884,6 +994,61 @@ function CartDrawer({
                     className="w-full resize-none rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
                   />
                 </Field>
+
+                <div className="rounded-xl border border-border bg-card p-3">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Live location
+                  </p>
+                  {coords ? (
+                    <div className="mt-2">
+                      <p className="text-sm font-semibold text-leaf">
+                        Location attached ✓
+                      </p>
+                      <a
+                        href={mapsLink ?? "#"}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="mt-0.5 block break-all text-xs text-muted-foreground underline hover:text-accent"
+                      >
+                        {coords.lat.toFixed(5)}, {coords.lng.toFixed(5)} (±
+                        {coords.acc} m)
+                      </a>
+                      <button
+                        onClick={shareLocation}
+                        className="mt-2 text-xs font-semibold text-accent hover:underline"
+                      >
+                        Update location
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        Share your GPS pin so the delivery rider finds you
+                        exactly. It&apos;s sent with your order on WhatsApp.
+                      </p>
+                      <button
+                        onClick={shareLocation}
+                        disabled={locStatus === "loading"}
+                        className="mt-2.5 inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-xs font-bold text-accent-foreground disabled:opacity-60"
+                      >
+                        {locStatus === "loading" ? (
+                          <Loader2 className="size-4 animate-spin" />
+                        ) : (
+                          <Navigation className="size-4" />
+                        )}
+                        {locStatus === "loading"
+                          ? "Getting location…"
+                          : "Share my location"}
+                      </button>
+                    </>
+                  )}
+                  {locStatus === "error" && (
+                    <p className="mt-2 text-xs font-medium text-destructive">
+                      {locError}
+                    </p>
+                  )}
+                </div>
+
                 <Field label="Notes (optional)">
                   <input
                     value={notes}
