@@ -1179,3 +1179,11 @@ function Field({
     </label>
   );
 }
+
+function ErrText({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="mt-1 block text-xs font-medium text-destructive">
+      {children}
+    </span>
+  );
+}
