@@ -1074,7 +1074,11 @@ function CartDrawer({
                   )}
                 </div>
 
-                <Field label="How should we cut it?">
+                {show("location") && (
+                  <ErrText>{errors.location}</ErrText>
+                )}
+
+                <Field label="How should we cut it? *">
                   <div className="flex flex-wrap gap-2">
                     {CUT_STYLES.map((c) => {
                       const active = cut === c;
