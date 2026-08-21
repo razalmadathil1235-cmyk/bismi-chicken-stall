@@ -40,7 +40,13 @@ const PHONE_INTL = "918157988462";
 const ADDRESS =
   "MLA Road, Kuttikatoor, Kozhikode, Kerala 673571 (Landmark: Kunnamangalam Co-operative Bank)";
 const DELIVERY_INFO = "₹10 per 3 km";
-const SUPPORT_EMAILS = ["shameer.ep53@gmail.com", "razalmadathil1235@gmail.com"];
+const SUPPORT_EMAILS = ["shameer.ep53@gmail.com"];
+const CUT_STYLES = [
+  "Curry cut",
+  "Fry cut",
+  "Chicken 65 cut",
+  "Biriyani cut",
+] as const;
 
 type Product = {
   id: string;
