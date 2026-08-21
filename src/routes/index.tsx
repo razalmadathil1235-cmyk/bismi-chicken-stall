@@ -40,7 +40,13 @@ const PHONE_INTL = "918157988462";
 const ADDRESS =
   "MLA Road, Kuttikatoor, Kozhikode, Kerala 673571 (Landmark: Kunnamangalam Co-operative Bank)";
 const DELIVERY_INFO = "₹10 per 3 km";
-const SUPPORT_EMAILS = ["shameer.ep53@gmail.com", "razalmadathil1235@gmail.com"];
+const SUPPORT_EMAILS = ["shameer.ep53@gmail.com"];
+const CUT_STYLES = [
+  "Curry cut",
+  "Fry cut",
+  "Chicken 65 cut",
+  "Biriyani cut",
+] as const;
 
 type Product = {
   id: string;
@@ -861,6 +867,19 @@ function CartDrawer({
 
   const waHref = `https://wa.me/${PHONE_INTL}?text=${encodeURIComponent(message)}`;
 
+  const errors = {
+    name: name.trim().length < 2 ? "Please enter your name" : "",
+    phone: /^[6-9]\d{9}$/.test(phone.replace(/\D/g, ""))
+      ? ""
+      : "Enter a valid 10-digit mobile number",
+    address: address.trim().length < 8 ? "Please enter your full address" : "",
+    cut: cut ? "" : "Please choose a cut style",
+    location: coords ? "" : "Please turn on location and share your GPS pin",
+  };
+  const isValid = Object.values(errors).every((e) => !e);
+  const [touched, setTouched] = useState(false);
+  const show = (k: keyof typeof errors) => (touched ? errors[k] : "");
+
   return (
     <>
       <div
@@ -970,15 +989,16 @@ function CartDrawer({
               })}
 
               <div className="space-y-3 pt-2">
-                <Field label="Your name">
+                <Field label="Your name *">
                   <input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="e.g. Rahim"
                     className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
                   />
+                  {show("name") && <ErrText>{errors.name}</ErrText>}
                 </Field>
-                <Field label="Phone number">
+                <Field label="Phone number *">
                   <input
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
@@ -986,8 +1006,9 @@ function CartDrawer({
                     placeholder="10-digit mobile number"
                     className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
                   />
+                  {show("phone") && <ErrText>{errors.phone}</ErrText>}
                 </Field>
-                <Field label="Delivery address">
+                <Field label="Delivery address *">
                   <textarea
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
@@ -995,7 +1016,9 @@ function CartDrawer({
                     placeholder="House name, street, area, landmark"
                     className="w-full resize-none rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
                   />
+                  {show("address") && <ErrText>{errors.address}</ErrText>}
                 </Field>
+
 
                 <div className="rounded-xl border border-border bg-card p-3">
                   <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -1051,7 +1074,11 @@ function CartDrawer({
                   )}
                 </div>
 
-                <Field label="How should we cut it?">
+                {show("location") && (
+                  <ErrText>{errors.location}</ErrText>
+                )}
+
+                <Field label="How should we cut it? *">
                   <div className="flex flex-wrap gap-2">
                     {CUT_STYLES.map((c) => {
                       const active = cut === c;
@@ -1071,7 +1098,9 @@ function CartDrawer({
                       );
                     })}
                   </div>
+                  {show("cut") && <ErrText>{errors.cut}</ErrText>}
                 </Field>
+
 
                 <Field label="Notes (optional)">
                   <input
@@ -1096,13 +1125,27 @@ function CartDrawer({
                 </span>
               </div>
               <a
-                href={waHref}
+                href={isValid ? waHref : undefined}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-leaf px-5 py-3 text-sm font-bold text-white shadow-soft transition-transform hover:scale-[1.02]"
+                aria-disabled={!isValid}
+                onClick={(e) => {
+                  setTouched(true);
+                  if (!isValid) e.preventDefault();
+                }}
+                className={`mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-leaf px-5 py-3 text-sm font-bold text-white shadow-soft transition-transform ${
+                  isValid
+                    ? "hover:scale-[1.02]"
+                    : "cursor-not-allowed opacity-50"
+                }`}
               >
                 <MessageCircle className="size-4" /> Order on WhatsApp
               </a>
+              {touched && !isValid && (
+                <p className="mt-2 text-center text-[11px] font-semibold text-destructive">
+                  Fill every detail and turn on location to place the order.
+                </p>
+              )}
               <a
                 href={`tel:${PHONE}`}
                 className="mt-2 flex w-full items-center justify-center gap-2 rounded-full border border-border bg-background px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-secondary"
@@ -1134,5 +1177,13 @@ function Field({
       </span>
       {children}
     </label>
+  );
+}
+
+function ErrText({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="mt-1 block text-xs font-medium text-destructive">
+      {children}
+    </span>
   );
 }
