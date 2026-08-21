@@ -642,64 +642,114 @@ function InfoRow({
 /* ---------- Support ---------- */
 
 function Support() {
+  const channels = [
+    {
+      icon: Phone,
+      label: "Call the shop",
+      value: PHONE,
+      href: `tel:${PHONE}`,
+      desc: "Fastest for today's rate & orders",
+      tone: "accent" as const,
+    },
+    {
+      icon: MessageCircle,
+      label: "WhatsApp",
+      value: PHONE,
+      href: `https://wa.me/${PHONE_INTL}`,
+      desc: "Send your order or a quick question",
+      tone: "leaf" as const,
+    },
+    {
+      icon: Mail,
+      label: "Email support",
+      value: SUPPORT_EMAILS[0],
+      href: `mailto:${SUPPORT_EMAILS[0]}?subject=${encodeURIComponent("Bismi Chicken Stall \u2014 support")}`,
+      desc: "For feedback, complaints & receipts",
+      tone: "accent" as const,
+    },
+  ];
+
   return (
     <section id="support" className="border-y border-border bg-secondary/30">
-      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-20">
-        <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent">
-              Support
-            </p>
-            <h2 className="mt-2 font-display text-3xl font-600 tracking-tight text-foreground sm:text-4xl">
-              Need help with an order?
-            </h2>
-            <p className="mt-3 max-w-md text-muted-foreground">
-              Something wrong with a delivery, a question about today&apos;s rate,
-              or feedback for us? Call the shop, or write to our support team —
-              we reply as soon as we can.
-            </p>
-            <a
-              href={`tel:${PHONE}`}
-              className="mt-6 inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground shadow-soft transition-transform hover:scale-[1.03]"
-            >
-              <Phone className="size-4" /> {PHONE}
-            </a>
-          </div>
+      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-24">
+        <div className="mb-10 max-w-2xl">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent">
+            Support
+          </p>
+          <h2 className="mt-2 font-display text-3xl font-600 tracking-tight text-foreground sm:text-4xl">
+            Need help with an order?
+          </h2>
+          <p className="mt-3 text-muted-foreground">
+            Something wrong with a delivery, a question about today's rate,
+            or feedback for us? Reach us on any channel below \u2014 we reply
+            as soon as we can.
+          </p>
+        </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            {SUPPORT_EMAILS.map((email) => (
-              <a
-                key={email}
-                href={`mailto:${email}?subject=${encodeURIComponent("Bismi Chicken Stall — support")}`}
-                className="group rounded-2xl border border-border bg-card p-5 shadow-soft transition-transform hover:-translate-y-0.5"
-              >
-                <span className="grid size-11 place-items-center rounded-xl bg-accent/10 text-accent">
-                  <Mail className="size-5" />
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {channels.map((c) => (
+            <a
+              key={c.label}
+              href={c.href}
+              target={c.href.startsWith("http") ? "_blank" : undefined}
+              rel={c.href.startsWith("http") ? "noreferrer" : undefined}
+              className="group flex flex-col rounded-2xl border border-border bg-card p-5 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-warm"
+            >
+              <div className="flex items-center gap-3">
+                <span
+                  className={`grid size-11 place-items-center rounded-xl ${
+                    c.tone === "leaf"
+                      ? "bg-leaf/15 text-leaf"
+                      : "bg-accent/10 text-accent"
+                  }`}
+                >
+                  <c.icon className="size-5" />
                 </span>
-                <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Email support
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  {c.label}
                 </p>
-                <p className="mt-1 break-all text-sm font-semibold text-foreground group-hover:text-accent">
-                  {email}
-                </p>
-              </a>
-            ))}
-            <div className="rounded-2xl border border-dashed border-border p-5 sm:col-span-2">
-              <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                <LifeBuoy className="size-4 text-accent" /> Support hours
+              </div>
+              <p className="mt-4 break-words text-base font-semibold text-foreground group-hover:text-accent">
+                {c.value}
               </p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                7:00 AM – 9:00 PM daily. For urgent delivery issues, WhatsApp is
-                fastest.
-              </p>
-            </div>
+              <p className="mt-1 text-sm text-muted-foreground">{c.desc}</p>
+              <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-accent">
+                Contact <ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+              </span>
+            </a>
+          ))}
+        </div>
+
+        <div className="mt-4 grid gap-4 sm:grid-cols-3">
+          <div className="rounded-2xl border border-border bg-card/60 p-5">
+            <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
+              <Clock className="size-4 text-accent" /> Support hours
+            </p>
+            <p className="mt-1.5 text-sm text-muted-foreground">
+              7:00 AM \u2013 9:00 PM, every day.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-border bg-card/60 p-5">
+            <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
+              <LifeBuoy className="size-4 text-accent" /> Response time
+            </p>
+            <p className="mt-1.5 text-sm text-muted-foreground">
+              Calls & WhatsApp answered within minutes during shop hours.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-border bg-card/60 p-5">
+            <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
+              <ShieldCheck className="size-4 text-accent" /> Quality promise
+            </p>
+            <p className="mt-1.5 text-sm text-muted-foreground">
+              Not satisfied with a cut? Tell us \u2014 we'll make it right.
+            </p>
           </div>
         </div>
       </div>
     </section>
   );
 }
-
 /* ---------- Footer ---------- */
 
 function Footer({ onCart }: { onCart: () => void }) {
