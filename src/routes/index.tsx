@@ -1125,13 +1125,27 @@ function CartDrawer({
                 </span>
               </div>
               <a
-                href={waHref}
+                href={isValid ? waHref : undefined}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-leaf px-5 py-3 text-sm font-bold text-white shadow-soft transition-transform hover:scale-[1.02]"
+                aria-disabled={!isValid}
+                onClick={(e) => {
+                  setTouched(true);
+                  if (!isValid) e.preventDefault();
+                }}
+                className={`mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-leaf px-5 py-3 text-sm font-bold text-white shadow-soft transition-transform ${
+                  isValid
+                    ? "hover:scale-[1.02]"
+                    : "cursor-not-allowed opacity-50"
+                }`}
               >
                 <MessageCircle className="size-4" /> Order on WhatsApp
               </a>
+              {touched && !isValid && (
+                <p className="mt-2 text-center text-[11px] font-semibold text-destructive">
+                  Fill every detail and turn on location to place the order.
+                </p>
+              )}
               <a
                 href={`tel:${PHONE}`}
                 className="mt-2 flex w-full items-center justify-center gap-2 rounded-full border border-border bg-background px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-secondary"
