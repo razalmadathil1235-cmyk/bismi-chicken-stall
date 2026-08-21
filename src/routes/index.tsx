@@ -867,6 +867,19 @@ function CartDrawer({
 
   const waHref = `https://wa.me/${PHONE_INTL}?text=${encodeURIComponent(message)}`;
 
+  const errors = {
+    name: name.trim().length < 2 ? "Please enter your name" : "",
+    phone: /^[6-9]\d{9}$/.test(phone.replace(/\D/g, ""))
+      ? ""
+      : "Enter a valid 10-digit mobile number",
+    address: address.trim().length < 8 ? "Please enter your full address" : "",
+    cut: cut ? "" : "Please choose a cut style",
+    location: coords ? "" : "Please turn on location and share your GPS pin",
+  };
+  const isValid = Object.values(errors).every((e) => !e);
+  const [touched, setTouched] = useState(false);
+  const show = (k: keyof typeof errors) => (touched ? errors[k] : "");
+
   return (
     <>
       <div
