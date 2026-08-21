@@ -989,15 +989,16 @@ function CartDrawer({
               })}
 
               <div className="space-y-3 pt-2">
-                <Field label="Your name">
+                <Field label="Your name *">
                   <input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="e.g. Rahim"
                     className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
                   />
+                  {show("name") && <ErrText>{errors.name}</ErrText>}
                 </Field>
-                <Field label="Phone number">
+                <Field label="Phone number *">
                   <input
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
@@ -1005,8 +1006,9 @@ function CartDrawer({
                     placeholder="10-digit mobile number"
                     className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
                   />
+                  {show("phone") && <ErrText>{errors.phone}</ErrText>}
                 </Field>
-                <Field label="Delivery address">
+                <Field label="Delivery address *">
                   <textarea
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
@@ -1014,7 +1016,9 @@ function CartDrawer({
                     placeholder="House name, street, area, landmark"
                     className="w-full resize-none rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
                   />
+                  {show("address") && <ErrText>{errors.address}</ErrText>}
                 </Field>
+
 
                 <div className="rounded-xl border border-border bg-card p-3">
                   <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
