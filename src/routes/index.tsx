@@ -681,7 +681,7 @@ function Support() {
           </h2>
           <p className="mt-3 text-muted-foreground">
             Something wrong with a delivery, a question about today's rate,
-            or feedback for us? Reach us on any channel below \u2014 we reply
+            or feedback for us? Reach us on any channel below — we reply
             as soon as we can.
           </p>
         </div>
@@ -726,7 +726,7 @@ function Support() {
               <Clock className="size-4 text-accent" /> Support hours
             </p>
             <p className="mt-1.5 text-sm text-muted-foreground">
-              7:00 AM \u2013 9:00 PM, every day.
+              7:00 AM – 9:00 PM, every day.
             </p>
           </div>
           <div className="rounded-2xl border border-border bg-card/60 p-5">
@@ -742,7 +742,7 @@ function Support() {
               <ShieldCheck className="size-4 text-accent" /> Quality promise
             </p>
             <p className="mt-1.5 text-sm text-muted-foreground">
-              Not satisfied with a cut? Tell us \u2014 we'll make it right.
+              Not satisfied with a cut? Tell us — we'll make it right.
             </p>
           </div>
         </div>
