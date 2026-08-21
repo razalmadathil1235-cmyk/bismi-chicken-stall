@@ -1098,7 +1098,9 @@ function CartDrawer({
                       );
                     })}
                   </div>
+                  {show("cut") && <ErrText>{errors.cut}</ErrText>}
                 </Field>
+
 
                 <Field label="Notes (optional)">
                   <input
