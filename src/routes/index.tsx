@@ -721,30 +721,26 @@ function Support() {
         </div>
 
         <div className="mt-4 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-2xl border border-border bg-card/60 p-5">
-            <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
-              <Clock className="size-4 text-accent" /> Support hours
-            </p>
-            <p className="mt-1.5 text-sm text-muted-foreground">
-              7:00 AM – 9:00 PM, every day.
-            </p>
-          </div>
-          <div className="rounded-2xl border border-border bg-card/60 p-5">
-            <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
-              <LifeBuoy className="size-4 text-accent" /> Response time
-            </p>
-            <p className="mt-1.5 text-sm text-muted-foreground">
-              Calls & WhatsApp answered within minutes during shop hours.
-            </p>
-          </div>
-          <div className="rounded-2xl border border-border bg-card/60 p-5">
-            <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
-              <ShieldCheck className="size-4 text-accent" /> Quality promise
-            </p>
-            <p className="mt-1.5 text-sm text-muted-foreground">
-              Not satisfied with a cut? Tell us — we'll make it right.
-            </p>
-          </div>
+          {[
+            { icon: Clock, title: "Support hours", text: "7:00 AM – 9:00 PM, every day." },
+            { icon: LifeBuoy, title: "Response time", text: "Calls & WhatsApp answered within minutes during shop hours." },
+            { icon: ShieldCheck, title: "Quality promise", text: "Not satisfied with a cut? Tell us — we'll make it right." },
+          ].map((f) => (
+            <div
+              key={f.title}
+              className="flex items-start gap-3 rounded-2xl border border-border bg-card p-4 shadow-soft"
+            >
+              <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-accent/10 text-accent">
+                <f.icon className="size-4" strokeWidth={2.2} />
+              </span>
+              <div>
+                <p className="text-sm font-semibold text-foreground">{f.title}</p>
+                <p className="mt-0.5 text-sm leading-relaxed text-muted-foreground">
+                  {f.text}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
