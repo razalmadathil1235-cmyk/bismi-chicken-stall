@@ -750,6 +750,7 @@ function Support() {
     </section>
   );
 }
+
 /* ---------- Footer ---------- */
 
 function Footer({ onCart }: { onCart: () => void }) {
