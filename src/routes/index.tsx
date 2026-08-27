@@ -24,6 +24,7 @@ import {
   Heart,
 } from "lucide-react";
 
+import { supabase } from "@/integrations/supabase/client";
 import logoAsset from "@/assets/bismi-logo.jpg.asset.json";
 import heroImg from "@/assets/hero.jpg";
 import broilerImg from "@/assets/chicken-broiler.jpg";
@@ -925,7 +926,45 @@ function CartDrawer({
   };
   const isValid = Object.values(errors).every((e) => !e);
   const [touched, setTouched] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const show = (k: keyof typeof errors) => (touched ? errors[k] : "");
+
+  const placeOrder = async () => {
+    setTouched(true);
+    if (!isValid || submitting) return;
+    setSubmitting(true);
+    setSubmitError("");
+    const win = window.open("", "_blank");
+    try {
+      const { error } = await supabase.from("orders").insert({
+        customer_name: name.trim(),
+        phone: phone.replace(/\D/g, ""),
+        address: address.trim(),
+        cut_style: cut,
+        notes: notes.trim() || null,
+        items: cart.map((i) => ({
+          id: i.id,
+          name: PRODUCTS.find((x) => x.id === i.id)?.name ?? i.id,
+          qty: i.qty,
+        })),
+        total_kg: cart.reduce((s, i) => s + i.qty, 0),
+        lat: coords?.lat ?? null,
+        lng: coords?.lng ?? null,
+        accuracy: coords?.acc ?? null,
+      });
+      if (error) throw error;
+      if (win) win.location.href = waHref;
+      else window.location.href = waHref;
+    } catch {
+      setSubmitError("Couldn't save the order. Sending it on WhatsApp instead.");
+      if (win) win.location.href = waHref;
+      else window.location.href = waHref;
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
 
   return (
     <>
@@ -1171,23 +1210,28 @@ function CartDrawer({
                   We confirm today&apos;s rate on WhatsApp or call
                 </span>
               </div>
-              <a
-                href={isValid ? waHref : undefined}
-                target="_blank"
-                rel="noreferrer"
-                aria-disabled={!isValid}
-                onClick={(e) => {
-                  setTouched(true);
-                  if (!isValid) e.preventDefault();
-                }}
+              <button
+                type="button"
+                onClick={placeOrder}
+                disabled={submitting}
                 className={`mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-leaf px-5 py-3 text-sm font-bold text-white shadow-soft transition-transform ${
-                  isValid
+                  isValid && !submitting
                     ? "hover:scale-[1.02]"
                     : "cursor-not-allowed opacity-50"
                 }`}
               >
-                <MessageCircle className="size-4" /> Order on WhatsApp
-              </a>
+                {submitting ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <MessageCircle className="size-4" />
+                )}
+                {submitting ? "Placing order…" : "Place order"}
+              </button>
+              {submitError && (
+                <p className="mt-2 text-center text-[11px] font-semibold text-destructive">
+                  {submitError}
+                </p>
+              )}
               {touched && !isValid && (
                 <p className="mt-2 text-center text-[11px] font-semibold text-destructive">
                   Fill every detail and turn on location to place the order.
