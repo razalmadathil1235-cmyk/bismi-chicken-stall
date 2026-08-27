@@ -926,7 +926,45 @@ function CartDrawer({
   };
   const isValid = Object.values(errors).every((e) => !e);
   const [touched, setTouched] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const show = (k: keyof typeof errors) => (touched ? errors[k] : "");
+
+  const placeOrder = async () => {
+    setTouched(true);
+    if (!isValid || submitting) return;
+    setSubmitting(true);
+    setSubmitError("");
+    const win = window.open("", "_blank");
+    try {
+      const { error } = await supabase.from("orders").insert({
+        customer_name: name.trim(),
+        phone: phone.replace(/\D/g, ""),
+        address: address.trim(),
+        cut_style: cut,
+        notes: notes.trim() || null,
+        items: cart.map((i) => ({
+          id: i.id,
+          name: PRODUCTS.find((x) => x.id === i.id)?.name ?? i.id,
+          qty: i.qty,
+        })),
+        total_kg: cart.reduce((s, i) => s + i.qty, 0),
+        lat: coords?.lat ?? null,
+        lng: coords?.lng ?? null,
+        accuracy: coords?.acc ?? null,
+      });
+      if (error) throw error;
+      if (win) win.location.href = waHref;
+      else window.location.href = waHref;
+    } catch {
+      setSubmitError("Couldn't save the order. Sending it on WhatsApp instead.");
+      if (win) win.location.href = waHref;
+      else window.location.href = waHref;
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
 
   return (
     <>
