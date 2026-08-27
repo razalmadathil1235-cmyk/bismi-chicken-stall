@@ -821,7 +821,13 @@ function Footer({ onCart }: { onCart: () => void }) {
 
         <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row">
           <p>© {new Date().getFullYear()} Bismi Chicken Stall, Kuttikatoor.</p>
-          <p>Delivery ₹10 per 3 km · Pay on delivery</p>
+          <div className="flex items-center gap-3">
+            <p>Delivery ₹10 per 3 km · Pay on delivery</p>
+            <span aria-hidden>·</span>
+            <Link to="/owner" rel="nofollow" className="hover:text-accent">
+              Owner desk
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
