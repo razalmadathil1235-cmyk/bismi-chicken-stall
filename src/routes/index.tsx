@@ -24,6 +24,7 @@ import {
   Heart,
 } from "lucide-react";
 
+import { supabase } from "@/integrations/supabase/client";
 import logoAsset from "@/assets/bismi-logo.jpg.asset.json";
 import heroImg from "@/assets/hero.jpg";
 import broilerImg from "@/assets/chicken-broiler.jpg";
