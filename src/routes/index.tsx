@@ -1210,23 +1210,28 @@ function CartDrawer({
                   We confirm today&apos;s rate on WhatsApp or call
                 </span>
               </div>
-              <a
-                href={isValid ? waHref : undefined}
-                target="_blank"
-                rel="noreferrer"
-                aria-disabled={!isValid}
-                onClick={(e) => {
-                  setTouched(true);
-                  if (!isValid) e.preventDefault();
-                }}
+              <button
+                type="button"
+                onClick={placeOrder}
+                disabled={submitting}
                 className={`mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-leaf px-5 py-3 text-sm font-bold text-white shadow-soft transition-transform ${
-                  isValid
+                  isValid && !submitting
                     ? "hover:scale-[1.02]"
                     : "cursor-not-allowed opacity-50"
                 }`}
               >
-                <MessageCircle className="size-4" /> Order on WhatsApp
-              </a>
+                {submitting ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <MessageCircle className="size-4" />
+                )}
+                {submitting ? "Placing order…" : "Place order"}
+              </button>
+              {submitError && (
+                <p className="mt-2 text-center text-[11px] font-semibold text-destructive">
+                  {submitError}
+                </p>
+              )}
               {touched && !isValid && (
                 <p className="mt-2 text-center text-[11px] font-semibold text-destructive">
                   Fill every detail and turn on location to place the order.
