@@ -823,16 +823,51 @@ function Footer({ onCart }: { onCart: () => void }) {
           <p>© {new Date().getFullYear()} Bismi Chicken Stall, Kuttikatoor.</p>
           <div className="flex items-center gap-3">
             <p>Delivery ₹10 per 3 km · Pay on delivery</p>
-            <span aria-hidden>·</span>
-            <Link to="/owner" rel="nofollow" className="hover:text-accent">
-              Owner desk
-            </Link>
+            <OwnerLink />
           </div>
+
         </div>
       </div>
     </footer>
   );
 }
+
+const OWNER_EMAILS = [
+  "shameer.ep53@gmail.com",
+  "razalmadathil1235@gmail.com",
+];
+
+function OwnerLink() {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    const check = (email?: string | null) => {
+      if (!alive) return;
+      setShow(!!email && OWNER_EMAILS.includes(email.toLowerCase()));
+    };
+    supabase.auth.getSession().then(({ data }) => check(data.session?.user.email));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) =>
+      check(session?.user.email),
+    );
+    return () => {
+      alive = false;
+      sub.subscription.unsubscribe();
+    };
+  }, []);
+
+  if (!show) return null;
+
+  return (
+    <>
+      <span aria-hidden>·</span>
+      <Link to="/owner" rel="nofollow" className="hover:text-accent">
+        Owner desk
+      </Link>
+    </>
+  );
+}
+
 
 /* ---------- Cart Drawer ---------- */
 
