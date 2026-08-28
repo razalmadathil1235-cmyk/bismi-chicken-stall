@@ -997,7 +997,6 @@ function CartDrawer({
     if (!isValid || submitting) return;
     setSubmitting(true);
     setSubmitError("");
-    const win = window.open("", "_blank");
     try {
       const { error } = await supabase.from("orders").insert({
         customer_name: name.trim(),
