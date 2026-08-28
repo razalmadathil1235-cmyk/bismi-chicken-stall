@@ -1015,12 +1015,10 @@ function CartDrawer({
         accuracy: coords?.acc ?? null,
       });
       if (error) throw error;
-      if (win) win.location.href = waHref;
-      else window.location.href = waHref;
+      openWhatsApp();
     } catch {
       setSubmitError("Couldn't save the order. Sending it on WhatsApp instead.");
-      if (win) win.location.href = waHref;
-      else window.location.href = waHref;
+      openWhatsApp();
     } finally {
       setSubmitting(false);
     }
