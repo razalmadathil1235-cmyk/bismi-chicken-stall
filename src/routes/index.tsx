@@ -954,7 +954,28 @@ function CartDrawer({
     return parts.join("\n");
   }, [name, phone, address, cut, notes, lines, mapsLink, coords]);
 
-  const waHref = `https://wa.me/${PHONE_INTL}?text=${encodeURIComponent(message)}`;
+  const encodedMsg = encodeURIComponent(message);
+  const waHref = `https://wa.me/${PHONE_INTL}?text=${encodedMsg}`;
+  const isMobileDevice =
+    typeof navigator !== "undefined" &&
+    /android|iphone|ipad|ipod/i.test(navigator.userAgent);
+
+  const openWhatsApp = () => {
+    if (isMobileDevice) {
+      // Deep link straight into the WhatsApp app, fall back to wa.me if the
+      // app isn't installed.
+      const deepLink = `whatsapp://send?phone=${PHONE_INTL}&text=${encodedMsg}`;
+      const start = Date.now();
+      window.location.href = deepLink;
+      window.setTimeout(() => {
+        if (Date.now() - start < 2100 && !document.hidden) {
+          window.location.href = waHref;
+        }
+      }, 1800);
+    } else {
+      window.open(waHref, "_blank");
+    }
+  };
 
   const errors = {
     name: name.trim().length < 2 ? "Please enter your name" : "",
