@@ -832,6 +832,43 @@ function Footer({ onCart }: { onCart: () => void }) {
   );
 }
 
+const OWNER_EMAILS = [
+  "shameer.ep53@gmail.com",
+  "razalmadathil1235@gmail.com",
+];
+
+function OwnerLink() {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    const check = (email?: string | null) => {
+      if (!alive) return;
+      setShow(!!email && OWNER_EMAILS.includes(email.toLowerCase()));
+    };
+    supabase.auth.getSession().then(({ data }) => check(data.session?.user.email));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) =>
+      check(session?.user.email),
+    );
+    return () => {
+      alive = false;
+      sub.subscription.unsubscribe();
+    };
+  }, []);
+
+  if (!show) return null;
+
+  return (
+    <>
+      <span aria-hidden>·</span>
+      <Link to="/owner" rel="nofollow" className="hover:text-accent">
+        Owner desk
+      </Link>
+    </>
+  );
+}
+
+
 /* ---------- Cart Drawer ---------- */
 
 function CartDrawer({
