@@ -111,6 +111,7 @@ function OwnerPage() {
     );
   }
 
+  if (recovery) return <ResetPassword onDone={() => setRecovery(false)} />;
   if (!userId) return <SignIn />;
   if (!isOwner)
     return (
