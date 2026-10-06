@@ -129,16 +129,30 @@ function OwnerPage() {
 /* ---------- Sign in ---------- */
 
 function SignIn() {
-  const [mode, setMode] = useState<"in" | "up">("in");
+  const [mode, setMode] = useState<"in" | "up" | "forgot">("in");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
+  const [msgOk, setMsgOk] = useState(false);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
     setMsg("");
+    setMsgOk(false);
+    if (mode === "forgot") {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/owner`,
+      });
+      if (error) setMsg(error.message);
+      else {
+        setMsgOk(true);
+        setMsg("Reset link sent. Check your email and open the link to set a new password.");
+      }
+      setBusy(false);
+      return;
+    }
     const fn =
       mode === "in"
         ? supabase.auth.signInWithPassword({ email, password })
