@@ -57,7 +57,36 @@ type Product = {
   image: string;
   tag?: string;
   badge?: string;
+  rateLabel: string;
 };
+
+type Rate = { id: string; label: string; price_per_kg: number | null };
+
+function useRates() {
+  const [rates, setRates] = useState<Rate[]>([]);
+  useEffect(() => {
+    const load = async () => {
+      const { data } = await supabase
+        .from("rates")
+        .select("id, label, price_per_kg")
+        .order("sort_order");
+      setRates((data ?? []) as Rate[]);
+    };
+    void load();
+    const channel = supabase
+      .channel("rates-live")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "rates" },
+        () => void load(),
+      )
+      .subscribe();
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, []);
+  return rates;
+}
 
 const PRODUCTS: Product[] = [
   {
@@ -68,6 +97,7 @@ const PRODUCTS: Product[] = [
       "Tender farm-fresh broiler, cleaned and cut to your liking. Perfect for everyday curries and fries.",
     image: broilerImg,
     tag: "Best value",
+    rateLabel: "broiler",
   },
   {
     id: "legon",
@@ -77,6 +107,7 @@ const PRODUCTS: Product[] = [
       "Juicy thigh and drumstick cuts only — the favourite for biryani, fry and kids at home.",
     image: legImg,
     tag: "Most loved",
+    rateLabel: "leg",
   },
   {
     id: "spring",
@@ -86,6 +117,7 @@ const PRODUCTS: Product[] = [
       "Young, tender spring chicken with delicate flavour. Ideal for roast and rich masala.",
     image: springImg,
     tag: "Tender",
+    rateLabel: "spring",
   },
   {
     id: "nadan",
@@ -96,6 +128,7 @@ const PRODUCTS: Product[] = [
     image: nadanImg,
     tag: "Premium",
     badge: "Free-range",
+    rateLabel: "nadan",
   },
 ];
 
