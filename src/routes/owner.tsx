@@ -74,9 +74,11 @@ function OwnerPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
   const [isOwner, setIsOwner] = useState(false);
+  const [recovery, setRecovery] = useState(false);
 
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "PASSWORD_RECOVERY") setRecovery(true);
       setUserId(session?.user.id ?? null);
       setEmail(session?.user.email ?? null);
     });
@@ -111,6 +113,7 @@ function OwnerPage() {
     );
   }
 
+  if (recovery) return <ResetPassword onDone={() => setRecovery(false)} />;
   if (!userId) return <SignIn />;
   if (!isOwner)
     return (
@@ -126,16 +129,30 @@ function OwnerPage() {
 /* ---------- Sign in ---------- */
 
 function SignIn() {
-  const [mode, setMode] = useState<"in" | "up">("in");
+  const [mode, setMode] = useState<"in" | "up" | "forgot">("in");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
+  const [msgOk, setMsgOk] = useState(false);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
     setMsg("");
+    setMsgOk(false);
+    if (mode === "forgot") {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/owner`,
+      });
+      if (error) setMsg(error.message);
+      else {
+        setMsgOk(true);
+        setMsg("Reset link sent. Check your email and open the link to set a new password.");
+      }
+      setBusy(false);
+      return;
+    }
     const fn =
       mode === "in"
         ? supabase.auth.signInWithPassword({ email, password })
@@ -172,26 +189,49 @@ function SignIn() {
             placeholder="Email"
             className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
           />
-          <input
-            type="password"
-            required
-            minLength={6}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
-          />
+          {mode !== "forgot" && (
+            <input
+              type="password"
+              required
+              minLength={6}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
+            />
+          )}
           <button
             disabled={busy}
             className="flex w-full items-center justify-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-bold text-accent-foreground disabled:opacity-60"
           >
             {busy && <Loader2 className="size-4 animate-spin" />}
-            {mode === "in" ? "Sign in" : "Create owner account"}
+            {mode === "in"
+              ? "Sign in"
+              : mode === "up"
+                ? "Create owner account"
+                : "Send reset link"}
           </button>
         </form>
 
+        {mode === "in" && (
+          <button
+            onClick={() => {
+              setMode("forgot");
+              setMsg("");
+              setMsgOk(false);
+            }}
+            className="mt-3 w-full text-center text-xs font-semibold text-muted-foreground hover:text-foreground"
+          >
+            Forgot password?
+          </button>
+        )}
+
         {msg && (
-          <p className="mt-3 text-center text-xs font-semibold text-destructive">
+          <p
+            className={`mt-3 text-center text-xs font-semibold ${
+              msgOk ? "text-leaf" : "text-destructive"
+            }`}
+          >
             {msg}
           </p>
         )}
@@ -200,6 +240,7 @@ function SignIn() {
           onClick={() => {
             setMode(mode === "in" ? "up" : "in");
             setMsg("");
+            setMsgOk(false);
           }}
           className="mt-4 w-full text-center text-xs font-semibold text-accent"
         >
@@ -207,6 +248,94 @@ function SignIn() {
             ? "First time? Create the owner account"
             : "Already have an account? Sign in"}
         </button>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Reset password ---------- */
+
+function ResetPassword({ onDone }: { onDone: () => void }) {
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState("");
+  const [done, setDone] = useState(false);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setMsg("");
+    if (password !== confirm) {
+      setMsg("Passwords do not match.");
+      return;
+    }
+    setBusy(true);
+    const { error } = await supabase.auth.updateUser({ password });
+    if (error) setMsg(error.message);
+    else setDone(true);
+    setBusy(false);
+  };
+
+  return (
+    <div className="grid min-h-screen place-items-center bg-secondary/40 px-4">
+      <div className="w-full max-w-sm rounded-3xl border border-border bg-card p-7 shadow-warm">
+        <span className="grid size-12 place-items-center rounded-2xl bg-accent/10 text-accent">
+          <ShieldCheck className="size-6" />
+        </span>
+        <h1 className="mt-4 font-display text-2xl font-600 text-foreground">
+          Set a new password
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Choose a new password for your owner account.
+        </p>
+
+        {done ? (
+          <div className="mt-6 text-center">
+            <CheckCircle2 className="mx-auto size-8 text-leaf" />
+            <p className="mt-2 text-sm font-semibold text-foreground">
+              Password updated. You&apos;re signed in now.
+            </p>
+            <button
+              onClick={onDone}
+              className="mt-4 w-full rounded-full bg-accent px-5 py-3 text-sm font-bold text-accent-foreground"
+            >
+              Go to orders desk
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={submit} className="mt-6 space-y-3">
+            <input
+              type="password"
+              required
+              minLength={6}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="New password"
+              className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
+            />
+            <input
+              type="password"
+              required
+              minLength={6}
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+              placeholder="Confirm new password"
+              className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
+            />
+            <button
+              disabled={busy}
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-bold text-accent-foreground disabled:opacity-60"
+            >
+              {busy && <Loader2 className="size-4 animate-spin" />}
+              Update password
+            </button>
+            {msg && (
+              <p className="text-center text-xs font-semibold text-destructive">
+                {msg}
+              </p>
+            )}
+          </form>
+        )}
       </div>
     </div>
   );
