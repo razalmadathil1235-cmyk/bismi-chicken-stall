@@ -74,9 +74,11 @@ function OwnerPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
   const [isOwner, setIsOwner] = useState(false);
+  const [recovery, setRecovery] = useState(false);
 
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "PASSWORD_RECOVERY") setRecovery(true);
       setUserId(session?.user.id ?? null);
       setEmail(session?.user.email ?? null);
     });
