@@ -65,6 +65,33 @@ export type Database = {
         }
         Relationships: []
       }
+      rates: {
+        Row: {
+          created_at: string
+          id: string
+          label: string
+          price_per_kg: number | null
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label: string
+          price_per_kg?: number | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string
+          price_per_kg?: number | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
