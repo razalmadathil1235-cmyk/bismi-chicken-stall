@@ -201,6 +201,7 @@ function Index() {
         cart={cart}
         setQty={setQty}
         count={count}
+        rateFor={rateFor}
       />
     </div>
   );
