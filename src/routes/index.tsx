@@ -97,7 +97,7 @@ const PRODUCTS: Product[] = [
       "Tender farm-fresh broiler, cleaned and cut to your liking. Perfect for everyday curries and fries.",
     image: broilerImg,
     tag: "Best value",
-    rateLabel: "broiler",
+    rateLabel: "Broiler chicken",
   },
   {
     id: "legon",
@@ -107,7 +107,7 @@ const PRODUCTS: Product[] = [
       "Juicy thigh and drumstick cuts only — the favourite for biryani, fry and kids at home.",
     image: legImg,
     tag: "Most loved",
-    rateLabel: "leg",
+    rateLabel: "Leg piece",
   },
   {
     id: "spring",
@@ -117,7 +117,7 @@ const PRODUCTS: Product[] = [
       "Young, tender spring chicken with delicate flavour. Ideal for roast and rich masala.",
     image: springImg,
     tag: "Tender",
-    rateLabel: "spring",
+    rateLabel: "Spring chicken",
   },
   {
     id: "nadan",
@@ -128,7 +128,7 @@ const PRODUCTS: Product[] = [
     image: nadanImg,
     tag: "Premium",
     badge: "Free-range",
-    rateLabel: "nadan",
+    rateLabel: "Nadan kozhi",
   },
 ];
 

@@ -401,13 +401,6 @@ function ClaimOwner({
 
 type RateRow = { id: string; label: string; price_per_kg: number | null };
 
-const RATE_NAMES: Record<string, string> = {
-  broiler: "Broiler chicken",
-  leg: "Leg pieces (Legon)",
-  spring: "Spring chicken (Kada)",
-  nadan: "Nadan kozhi (country)",
-};
-
 function playChime() {
   try {
     const Ctx =
@@ -508,7 +501,7 @@ function RateBoard() {
               className="rounded-2xl border border-border bg-card p-4 shadow-soft"
             >
               <p className="font-display text-base font-600 text-foreground">
-                {RATE_NAMES[r.label] ?? r.label}
+                {r.label}
               </p>
               <div className="mt-3 flex items-center gap-2">
                 <div className="flex flex-1 items-center rounded-full border border-border bg-background px-3">
@@ -526,7 +519,7 @@ function RateBoard() {
                     step="1"
                     inputMode="decimal"
                     placeholder="—"
-                    aria-label={`Rate for ${RATE_NAMES[r.label] ?? r.label}`}
+                    aria-label={`Rate for ${r.label}`}
                     className="w-full bg-transparent px-2 py-2 text-sm font-semibold text-foreground outline-none"
                   />
                   <span className="text-xs text-muted-foreground">/kg</span>
