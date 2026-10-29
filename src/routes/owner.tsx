@@ -14,6 +14,8 @@ import {
   ChefHat,
   XCircle,
   Package,
+  IndianRupee,
+  Check,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -395,12 +397,161 @@ function ClaimOwner({
   );
 }
 
+/* ---------- Rate board ---------- */
+
+type RateRow = { id: string; label: string; price_per_kg: number | null };
+
+function playChime() {
+  try {
+    const Ctx =
+      window.AudioContext ??
+      (window as unknown as { webkitAudioContext?: typeof AudioContext })
+        .webkitAudioContext;
+    if (!Ctx) return;
+    const ctx = new Ctx();
+    if (ctx.state === "suspended") void ctx.resume();
+    [880, 1174.66].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const t0 = ctx.currentTime + i * 0.25;
+      osc.type = "sine";
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.0001, t0);
+      gain.gain.exponentialRampToValueAtTime(0.25, t0 + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.6);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(t0);
+      osc.stop(t0 + 0.65);
+    });
+    window.setTimeout(() => void ctx.close(), 1600);
+  } catch {
+    /* ignore */
+  }
+}
+
+function RateBoard() {
+  const [rows, setRows] = useState<RateRow[]>([]);
+  const [draft, setDraft] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState<string | null>(null);
+  const [saved, setSaved] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    const { data } = await supabase
+      .from("rates")
+      .select("id, label, price_per_kg")
+      .order("sort_order");
+    setRows((data ?? []) as unknown as RateRow[]);
+    setDraft({});
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  const save = async (r: RateRow) => {
+    const raw = draft[r.id];
+    if (raw === undefined || busy) return;
+    const value = raw.trim() === "" ? null : Number(raw);
+    if (value !== null && (!Number.isFinite(value) || value < 0)) return;
+    setBusy(r.id);
+    const { error } = await supabase
+      .from("rates")
+      .update({ price_per_kg: value })
+      .eq("id", r.id);
+    setBusy(null);
+    if (error) return;
+    setSaved(r.id);
+    window.setTimeout(() => setSaved((s) => (s === r.id ? null : s)), 1800);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center gap-2 py-16 text-sm text-muted-foreground">
+        <Loader2 className="size-4 animate-spin" /> Loading rates…
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
+        <div className="flex items-center gap-2">
+          <IndianRupee className="size-5 text-accent" />
+          <h2 className="font-display text-lg font-600 text-foreground">
+            Today&apos;s rate board
+          </h2>
+        </div>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Set the price per kg for each chicken. Customers see it on the site
+          the moment you save — and it goes into their WhatsApp order. Leave a
+          box empty to show &quot;Today&apos;s rate on call&quot; instead.
+        </p>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        {rows.map((r) => {
+          const value = draft[r.id] ?? (r.price_per_kg == null ? "" : String(r.price_per_kg));
+          const dirty = draft[r.id] !== undefined;
+          return (
+            <div
+              key={r.id}
+              className="rounded-2xl border border-border bg-card p-4 shadow-soft"
+            >
+              <p className="font-display text-base font-600 text-foreground">
+                {r.label}
+              </p>
+              <div className="mt-3 flex items-center gap-2">
+                <div className="flex flex-1 items-center rounded-full border border-border bg-background px-3">
+                  <span className="text-sm font-semibold text-accent">₹</span>
+                  <input
+                    value={value}
+                    onChange={(e) =>
+                      setDraft((d) => ({ ...d, [r.id]: e.target.value }))
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") void save(r);
+                    }}
+                    type="number"
+                    min="0"
+                    step="1"
+                    inputMode="decimal"
+                    placeholder="—"
+                    aria-label={`Rate for ${r.label}`}
+                    className="w-full bg-transparent px-2 py-2 text-sm font-semibold text-foreground outline-none"
+                  />
+                  <span className="text-xs text-muted-foreground">/kg</span>
+                </div>
+                <button
+                  onClick={() => void save(r)}
+                  disabled={!dirty || busy === r.id}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-xs font-semibold text-accent-foreground transition-opacity disabled:opacity-40"
+                >
+                  {busy === r.id ? (
+                    <Loader2 className="size-3.5 animate-spin" />
+                  ) : saved === r.id ? (
+                    <Check className="size-3.5" />
+                  ) : null}
+                  {saved === r.id ? "Saved" : "Save"}
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 /* ---------- Orders desk ---------- */
 
 function OrdersDesk({ email }: { email: string | null }) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("live");
+  const [view, setView] = useState<"orders" | "rates">("orders");
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -420,7 +571,8 @@ function OrdersDesk({ email }: { email: string | null }) {
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "orders" },
-        () => {
+        (payload) => {
+          if (payload.eventType === "INSERT") playChime();
           void load();
         },
       )
@@ -467,6 +619,21 @@ function OrdersDesk({ email }: { email: string | null }) {
             <p className="text-[11px] text-muted-foreground">{email}</p>
           </div>
           <div className="flex items-center gap-2">
+            <div className="flex rounded-full border border-border bg-card p-0.5">
+              {(["orders", "rates"] as const).map((v) => (
+                <button
+                  key={v}
+                  onClick={() => setView(v)}
+                  className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
+                    view === v
+                      ? "bg-accent text-accent-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {v === "orders" ? "Orders" : "Rate board"}
+                </button>
+              ))}
+            </div>
             <button
               onClick={() => void load()}
               className="grid size-9 place-items-center rounded-full border border-border bg-card text-foreground"
@@ -501,7 +668,9 @@ function OrdersDesk({ email }: { email: string | null }) {
       </header>
 
       <main className="mx-auto max-w-5xl px-4 py-6">
-        {visible.length === 0 ? (
+        {view === "rates" ? (
+          <RateBoard />
+        ) : visible.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-border bg-card/60 p-12 text-center">
             <Package className="mx-auto size-8 text-muted-foreground" />
             <p className="mt-3 font-display text-lg font-600 text-foreground">
