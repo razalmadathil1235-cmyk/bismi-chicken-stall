@@ -163,6 +163,10 @@ function Index() {
 
   const count = cart.reduce((s, i) => s + i.qty, 0);
 
+  const rates = useRates();
+  const rateFor = (label: string) =>
+    rates.find((r) => r.label === label)?.price_per_kg ?? null;
+
   const setQty = (id: string, qty: number) =>
     setCart((c) =>
       qty <= 0
@@ -185,7 +189,7 @@ function Index() {
       <Header count={count} onCart={() => setOpen(true)} />
       <Hero />
       <TrustStrip />
-      <Products onAdd={add} cart={cart} setQty={setQty} hydrated={hydrated} />
+      <Products onAdd={add} cart={cart} setQty={setQty} hydrated={hydrated} rateFor={rateFor} />
       <WhyUs />
       <Location />
       <Support />
@@ -382,11 +386,13 @@ function Products({
   cart,
   setQty,
   hydrated,
+  rateFor,
 }: {
   onAdd: (id: string) => void;
   cart: CartItem[];
   setQty: (id: string, qty: number) => void;
   hydrated: boolean;
+  rateFor: (label: string) => number | null;
 }) {
   return (
     <section id="products" className="mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-24">
@@ -446,7 +452,9 @@ function Products({
 
                 <div className="mt-4 flex items-center justify-between gap-2">
                   <p className="text-xs font-semibold uppercase tracking-wider text-accent">
-                    {RATE_NOTE}
+                    {rateFor(p.rateLabel) != null
+                      ? `₹${rateFor(p.rateLabel)}/kg today`
+                      : RATE_NOTE}
                   </p>
                   <a
                     href={`tel:${PHONE}`}
@@ -910,12 +918,14 @@ function CartDrawer({
   cart,
   setQty,
   count,
+  rateFor,
 }: {
   open: boolean;
   onClose: () => void;
   cart: CartItem[];
   setQty: (id: string, qty: number) => void;
   count: number;
+  rateFor: (label: string) => number | null;
 }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -961,7 +971,8 @@ function CartDrawer({
 
   const lines = cart.map((i) => {
     const p = PRODUCTS.find((x) => x.id === i.id)!;
-    return `${p.name} — ${i.qty} kg`;
+    const rate = rateFor(p.rateLabel);
+    return `${p.name} — ${i.qty} kg${rate != null ? ` @ ₹${rate}/kg` : ""}`;
   });
 
   const message = useMemo(() => {
@@ -1131,7 +1142,9 @@ function CartDrawer({
                         {p.name}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {RATE_NOTE}
+                        {rateFor(p.rateLabel) != null
+                          ? `₹${rateFor(p.rateLabel)}/kg`
+                          : RATE_NOTE}
                       </p>
                       <div className="mt-1.5 inline-flex items-center rounded-full border border-border bg-background p-0.5">
                         <button
